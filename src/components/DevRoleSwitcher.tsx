@@ -44,8 +44,8 @@ const DevRoleSwitcher: React.FC = () => {
   const currentRole = roles.find(r => r.role === user?.role);
   const CurrentIcon = currentRole?.icon || Shield;
 
-  // Only show in development mode
-  if (import.meta.env.PROD) {
+  // Show in development mode or when explicitly enabled
+  if (import.meta.env.PROD && !import.meta.env.VITE_ENABLE_DEV_SWITCHER) {
     return null;
   }
 
