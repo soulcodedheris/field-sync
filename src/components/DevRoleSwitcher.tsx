@@ -45,9 +45,10 @@ const DevRoleSwitcher: React.FC = () => {
   const CurrentIcon = currentRole?.icon || Shield;
 
   // Show in development mode or when explicitly enabled
-  if (import.meta.env.PROD && !import.meta.env.VITE_ENABLE_DEV_SWITCHER) {
-    return null;
-  }
+  // For now, always show in production for easy testing
+  // if (import.meta.env.PROD && !import.meta.env.VITE_ENABLE_DEV_SWITCHER) {
+  //   return null;
+  // }
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
