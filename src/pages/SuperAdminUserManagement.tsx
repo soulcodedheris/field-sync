@@ -17,15 +17,29 @@ import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
 import { UserManagementModal } from '../components/UserManagementModal';
+import { UserEditModal } from '../components/UserEditModal';
+import { UserDeleteModal } from '../components/UserDeleteModal';
+import { UserSuspendModal } from '../components/UserSuspendModal';
+import { UserActivateModal } from '../components/UserActivateModal';
+import { UserResetPasswordModal } from '../components/UserResetPasswordModal';
 
 export const SuperAdminUserManagement: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState('All Roles');
   const [selectedCompany, setSelectedCompany] = useState('All Company');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  
+  // Modal states for user actions
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [userToAction, setUserToAction] = useState<any>(null);
 
   const stats = [
     {
@@ -152,28 +166,57 @@ export const SuperAdminUserManagement: React.FC = () => {
   };
 
   const handleEditUser = (user: any) => {
-    console.log('Edit user:', user);
-    // TODO: Implement user editing logic
+    setUserToAction(user);
+    setIsEditModalOpen(true);
   };
 
   const handleDeleteUser = (userId: number) => {
-    console.log('Delete user:', userId);
-    // TODO: Implement user deletion logic
+    const user = users.find(u => u.id === userId);
+    setUserToAction(user);
+    setIsDeleteModalOpen(true);
   };
 
   const handleSuspendUser = (userId: number) => {
-    console.log('Suspend user:', userId);
-    // TODO: Implement user suspension logic
+    const user = users.find(u => u.id === userId);
+    setUserToAction(user);
+    setIsSuspendModalOpen(true);
   };
 
   const handleActivateUser = (userId: number) => {
-    console.log('Activate user:', userId);
-    // TODO: Implement user activation logic
+    const user = users.find(u => u.id === userId);
+    setUserToAction(user);
+    setIsActivateModalOpen(true);
   };
 
   const handleResetPassword = (userId: number) => {
-    console.log('Reset password for user:', userId);
-    // TODO: Implement password reset logic
+    const user = users.find(u => u.id === userId);
+    setUserToAction(user);
+    setIsResetPasswordModalOpen(true);
+  };
+
+  const handleSaveUser = (userData: any) => {
+    console.log('Save user:', userData);
+    setIsEditModalOpen(false);
+  };
+
+  const handleConfirmDelete = (userId: number) => {
+    console.log('Confirm delete user:', userId);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleConfirmSuspend = (userId: number) => {
+    console.log('Confirm suspend user:', userId);
+    setIsSuspendModalOpen(false);
+  };
+
+  const handleConfirmActivate = (userId: number) => {
+    console.log('Confirm activate user:', userId);
+    setIsActivateModalOpen(false);
+  };
+
+  const handleConfirmResetPassword = (userId: number, newPassword: string) => {
+    console.log('Confirm reset password for user:', userId, 'New password:', newPassword);
+    setIsResetPasswordModalOpen(false);
   };
 
   return (
@@ -234,7 +277,7 @@ export const SuperAdminUserManagement: React.FC = () => {
                 placeholder="search...."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -359,7 +402,10 @@ export const SuperAdminUserManagement: React.FC = () => {
             <button className="px-3 py-1 bg-[#10BF0A] text-white rounded text-sm hover:bg-[#0EA50A] transition-colors">1</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
-            <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Next
             </button>
           </div>
@@ -376,6 +422,42 @@ export const SuperAdminUserManagement: React.FC = () => {
         onActivate={handleActivateUser}
         onResetPassword={handleResetPassword}
         user={selectedUser}
+      />
+
+      {/* User Action Modals */}
+      <UserEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveUser}
+        user={userToAction}
+      />
+
+      <UserDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        user={userToAction}
+      />
+
+      <UserSuspendModal
+        isOpen={isSuspendModalOpen}
+        onClose={() => setIsSuspendModalOpen(false)}
+        onConfirm={handleConfirmSuspend}
+        user={userToAction}
+      />
+
+      <UserActivateModal
+        isOpen={isActivateModalOpen}
+        onClose={() => setIsActivateModalOpen(false)}
+        onConfirm={handleConfirmActivate}
+        user={userToAction}
+      />
+
+      <UserResetPasswordModal
+        isOpen={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
+        onConfirm={handleConfirmResetPassword}
+        user={userToAction}
       />
     </div>
   );

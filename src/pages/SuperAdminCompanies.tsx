@@ -14,13 +14,23 @@ import {
   Trash
 } from 'lucide-react';
 import { CompanyDetailsModal } from '../components/CompanyDetailsModal';
+import { CompanyDeleteModal } from '../components/CompanyDeleteModal';
+import { CompaniesFilterModal } from '../components/CompaniesFilterModal';
+import { CompaniesExportModal } from '../components/CompaniesExportModal';
 
 export const SuperAdminCompanies: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [selectedPlan, setSelectedPlan] = useState('All Plans');
+  
+  // Modal states
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [companyToDelete, setCompanyToDelete] = useState<any>(null);
 
   const handleViewCompany = (company: any) => {
     setSelectedCompany(company);
@@ -33,7 +43,13 @@ export const SuperAdminCompanies: React.FC = () => {
 
   const handleDeleteCompany = (companyId: number) => {
     console.log('Delete company:', companyId);
-    setSelectedCompany(null);
+    setCompanyToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = (company: any) => {
+    setCompanyToDelete(company);
+    setIsDeleteModalOpen(true);
   };
 
   const handleSuspendCompany = (companyId: number) => {
@@ -44,6 +60,14 @@ export const SuperAdminCompanies: React.FC = () => {
   const handleActivateCompany = (companyId: number) => {
     console.log('Activate company:', companyId);
     setSelectedCompany(null);
+  };
+
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
+
+  const handleExport = (config: any) => {
+    console.log('Exporting with config:', config);
   };
 
   const stats = [
@@ -220,7 +244,7 @@ export const SuperAdminCompanies: React.FC = () => {
                 placeholder="search...."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -239,13 +263,19 @@ export const SuperAdminCompanies: React.FC = () => {
             </button>
 
             {/* Filter Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors">
+            <button 
+              onClick={() => setIsFilterModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors"
+            >
               <Filter className="w-4 h-4" />
               <span className="hidden sm:inline">Filter</span>
             </button>
 
             {/* Export Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setIsExportModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Export</span>
             </button>
@@ -316,7 +346,7 @@ export const SuperAdminCompanies: React.FC = () => {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteCompany(company.id);
+                      handleOpenDeleteModal(company);
                     }}
                     className="p-1 sm:p-2 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors"
                   >
@@ -335,7 +365,10 @@ export const SuperAdminCompanies: React.FC = () => {
             <button className="px-3 py-1 bg-[#10BF0A] text-white rounded text-sm hover:bg-[#0EA50A] transition-colors">1</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
-            <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Next
             </button>
           </div>
@@ -351,6 +384,26 @@ export const SuperAdminCompanies: React.FC = () => {
         onDelete={handleDeleteCompany}
         onSuspend={handleSuspendCompany}
         onActivate={handleActivateCompany}
+      />
+
+      {/* Additional Modals */}
+      <CompaniesFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
+
+      <CompaniesExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
+      />
+
+      <CompanyDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteCompany}
+        company={companyToDelete}
       />
     </div>
   );

@@ -57,7 +57,7 @@ export const BulkActionsModal: React.FC<BulkActionsModalProps> = ({
       label: 'Change Status', 
       icon: CheckCircle, 
       description: 'Update status for selected jobs',
-      color: 'text-green-600 bg-green-50'
+      color: 'text-[#10BF0A] bg-green-50'
     },
     { 
       id: 'priority', 

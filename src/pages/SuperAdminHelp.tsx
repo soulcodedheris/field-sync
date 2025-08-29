@@ -18,6 +18,7 @@ import {
   BarChart3,
   Shield
 } from 'lucide-react';
+import { LiveChatModal } from '../components/LiveChatModal';
 
 // Help categories and their content for super admin users
 const helpCategories = [
@@ -247,6 +248,19 @@ export const SuperAdminHelp: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('getting-started');
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+
+  const handleEmailSupport = () => {
+    window.open('mailto:support@fieldsync.com');
+  };
+
+  const handleCallSupport = () => {
+    window.open('tel:+15551234567');
+  };
+
+  const handleLiveChat = () => {
+    setIsLiveChatOpen(true);
+  };
 
   const filteredCategories = helpCategories.filter(category =>
     category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -360,21 +374,36 @@ export const SuperAdminHelp: React.FC = () => {
           <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-2">Still need help?</h3>
           <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Our support team is here to help you with any questions or issues</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg hover:bg-[#0EA50A] transition-colors text-sm sm:text-base w-full sm:w-auto">
+            <button 
+              onClick={handleEmailSupport}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg hover:bg-[#0EA50A] transition-colors text-sm sm:text-base w-full sm:w-auto"
+            >
               <Mail className="w-4 h-4" />
               <span>Email Support</span>
             </button>
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base w-full sm:w-auto">
+            <button 
+              onClick={handleCallSupport}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base w-full sm:w-auto"
+            >
               <Phone className="w-4 h-4" />
               <span>Call Support</span>
             </button>
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base w-full sm:w-auto">
+            <button 
+              onClick={handleLiveChat}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base w-full sm:w-auto"
+            >
               <MessageCircle className="w-4 h-4" />
               <span>Live Chat</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Live Chat Modal */}
+      <LiveChatModal
+        isOpen={isLiveChatOpen}
+        onClose={() => setIsLiveChatOpen(false)}
+      />
     </div>
   );
 };

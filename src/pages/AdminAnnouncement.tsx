@@ -11,6 +11,8 @@ import {
   TrendingDown
 } from 'lucide-react';
 import { AnnouncementComposeModal } from '../components/AnnouncementComposeModal';
+import { AnnouncementViewModal } from '../components/AnnouncementViewModal';
+import { AnnouncementDeleteModal } from '../components/AnnouncementDeleteModal';
 
 interface Announcement {
   id: string;
@@ -24,6 +26,9 @@ interface Announcement {
 const AdminAnnouncement: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Category');
   const [isComposeModalOpen, setIsComposeModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [viewAnnouncement, setViewAnnouncement] = useState<Announcement | null>(null);
+  const [deleteAnnouncement, setDeleteAnnouncement] = useState<Announcement | null>(null);
   const [announcements] = useState<Announcement[]>([
     {
       id: '1',
@@ -53,6 +58,7 @@ const AdminAnnouncement: React.FC = () => {
 
   const handleDelete = (id: string) => {
     console.log('Delete announcement:', id);
+    setDeleteAnnouncement(null);
   };
 
   const handleEdit = (id: string) => {
@@ -185,13 +191,13 @@ const AdminAnnouncement: React.FC = () => {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => handleEdit(announcement.id)}
+                      onClick={() => setViewAnnouncement(announcement)}
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                     >
                       <Edit3 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                     </button>
                     <button
-                      onClick={() => handleDelete(announcement.id)}
+                      onClick={() => setDeleteAnnouncement(announcement)}
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                     >
                       <Trash2 className="w-4 h-4 text-[#F44336]" />
@@ -217,7 +223,10 @@ const AdminAnnouncement: React.FC = () => {
               <button className="w-8 h-8 border border-[#D1D5DB] text-gray-600 dark:text-gray-400 rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800">
                 3
               </button>
-              <button className="px-3 h-8 border border-[#D1D5DB] text-gray-600 dark:text-gray-400 rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800">
+              <button 
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="px-3 h-8 border border-[#D1D5DB] text-gray-600 dark:text-gray-400 rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
                 Next
               </button>
             </div>
@@ -229,6 +238,19 @@ const AdminAnnouncement: React.FC = () => {
       <AnnouncementComposeModal 
         isOpen={isComposeModalOpen}
         onClose={() => setIsComposeModalOpen(false)}
+      />
+
+      <AnnouncementViewModal
+        isOpen={!!viewAnnouncement}
+        onClose={() => setViewAnnouncement(null)}
+        announcement={viewAnnouncement}
+      />
+
+      <AnnouncementDeleteModal
+        isOpen={!!deleteAnnouncement}
+        onClose={() => setDeleteAnnouncement(null)}
+        onConfirm={(id) => handleDelete(String(id))}
+        announcement={deleteAnnouncement ? { id: deleteAnnouncement.id, title: deleteAnnouncement.title } : null}
       />
     </div>
   );

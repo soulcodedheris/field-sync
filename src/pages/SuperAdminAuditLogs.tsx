@@ -16,13 +16,28 @@ import {
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
+import { SuperAdminAuditLogFilterModal } from '../components/SuperAdminAuditLogFilterModal';
+import { SuperAdminAuditLogExportModal } from '../components/SuperAdminAuditLogExportModal';
 
 export const SuperAdminAuditLogs: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAction, setSelectedAction] = useState('All Actions');
   const [selectedDate, setSelectedDate] = useState('mm/dd/yyyy');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
+  
+  // Modal states
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
+
+  const handleExport = (config: any) => {
+    console.log('Exporting with config:', config);
+  };
 
   const stats = [
     {
@@ -203,7 +218,7 @@ export const SuperAdminAuditLogs: React.FC = () => {
                 placeholder="search...."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -229,13 +244,19 @@ export const SuperAdminAuditLogs: React.FC = () => {
             </button>
 
             {/* Filter Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors">
+            <button 
+              onClick={() => setIsFilterModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors"
+            >
               <Filter className="w-4 h-4" />
               <span className="hidden sm:inline">Filter</span>
             </button>
 
             {/* Export Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setIsExportModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Export</span>
             </button>
@@ -329,18 +350,37 @@ export const SuperAdminAuditLogs: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 sm:pt-6 border-t border-[#EBEBEB] mt-4 sm:mt-6">
           <span className="text-sm text-gray-600 dark:text-gray-400">Showing 1 to 3 of 847 results</span>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Previous
             </button>
             <button className="px-3 py-1 bg-[#10BF0A] text-white rounded text-sm hover:bg-[#0EA50A] transition-colors">1</button>
             <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
             <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
-            <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Next
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <SuperAdminAuditLogFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
+
+      <SuperAdminAuditLogExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
+      />
     </div>
   );
 };

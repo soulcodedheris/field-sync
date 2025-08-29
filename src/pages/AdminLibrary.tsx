@@ -12,12 +12,14 @@ import {
   GraduationCap,
   Image
 } from 'lucide-react';
+import { DocumentAddModal } from '../components/DocumentAddModal';
 
 export const AdminLibrary: React.FC = () => {
   const { user } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedType, setSelectedType] = useState('All Types');
+  const [isAddDocumentModalOpen, setIsAddDocumentModalOpen] = useState(false);
 
   const quickAccessItems = [
     {
@@ -132,6 +134,12 @@ export const AdminLibrary: React.FC = () => {
     }
   };
 
+  const handleAddDocument = (documentData: any) => {
+    console.log('Adding document:', documentData);
+    // Add to documents array
+    documents.push(documentData);
+  };
+
   return (
     <div className=" sm:p-6 space-y-6 sm:space-y-8">
       {/* Header Section */}
@@ -188,7 +196,10 @@ export const AdminLibrary: React.FC = () => {
                 <span className="truncate">{selectedType}</span>
                 <ChevronDown className="w-4 h-4 flex-shrink-0" />
               </button>
-              <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm sm:text-lg">
+              <button 
+                onClick={() => setIsAddDocumentModalOpen(true)}
+                className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm sm:text-lg"
+              >
                 <Plus className="w-5 h-5" />
                 <span>Add Document</span>
               </button>
@@ -233,6 +244,13 @@ export const AdminLibrary: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Modals */}
+      <DocumentAddModal
+        isOpen={isAddDocumentModalOpen}
+        onClose={() => setIsAddDocumentModalOpen(false)}
+        onSave={handleAddDocument}
+      />
     </div>
   );
 };

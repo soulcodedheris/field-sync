@@ -22,6 +22,7 @@ import userAvatar3 from '../assets/user-avatar-3.png';
 
 export const AdminInventory: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const statCards = [
@@ -293,7 +294,12 @@ export const AdminInventory: React.FC = () => {
             <button className="w-7 h-7 sm:w-8 sm:h-8 bg-[#10BF0A] text-white rounded text-xs sm:text-sm font-medium">1</button>
             <button className="w-7 h-7 sm:w-8 sm:h-8 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">2</button>
             <button className="w-7 h-7 sm:w-8 sm:h-8 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">3</button>
-            <button className="px-2 sm:px-4 py-1 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">Next</button>
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-2 sm:px-4 py-1 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm hover:bg-gray-50 transition-colors"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
@@ -398,7 +404,12 @@ export const AdminInventory: React.FC = () => {
             <button className="w-7 h-7 sm:w-8 sm:h-8 bg-[#10BF0A] text-white rounded text-xs sm:text-sm font-medium">1</button>
             <button className="w-7 h-7 sm:w-8 sm:h-8 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">2</button>
             <button className="w-7 h-7 sm:w-8 sm:h-8 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">3</button>
-            <button className="px-2 sm:px-4 py-1 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm">Next</button>
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-2 sm:px-4 py-1 border border-[#EBEBEB] text-gray-600 rounded text-xs sm:text-sm hover:bg-gray-50 transition-colors"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

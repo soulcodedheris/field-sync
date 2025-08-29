@@ -17,6 +17,7 @@ import userAvatar3 from '../assets/user-avatar-3.png';
 import userAvatarAI from '../assets/user-avatar-ai.png';
 import { TeamMembersModal } from '../components/TeamMembersModal';
 import { JobDetailsModal } from '../components/JobDetailsModal';
+import { DirectionsModal } from '../components/DirectionsModal';
 
 // Mock data for jobs
 const mockJobs = [
@@ -99,6 +100,7 @@ export const TechnicianJobs: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
   const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
   const [isTeamMembersOpen, setIsTeamMembersOpen] = useState(false);
+  const [isDirectionsOpen, setIsDirectionsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All Jobs');
 
@@ -317,12 +319,24 @@ const getJobStatusBadge = (status: string) => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-2">
-                <button className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDirectionsOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors"
+                >
                   <Navigation className="w-4 h-4" />
                   <span className="hidden sm:inline">Get Directions</span>
                   <span className="sm:hidden">Directions</span>
                 </button>
-                <button className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleJobClick(job.id);
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">View Details</span>
                   <span className="sm:hidden">Details</span>
@@ -347,6 +361,12 @@ const getJobStatusBadge = (status: string) => {
           ...tech,
           status: tech.status as "active" | "busy" | "offline"
         })) || []}
+      />
+
+      <DirectionsModal
+        isOpen={isDirectionsOpen}
+        onClose={() => setIsDirectionsOpen(false)}
+        job={mockJobs.find(job => job.id === selectedJob) || mockJobs[0]}
       />
     </div>
   );

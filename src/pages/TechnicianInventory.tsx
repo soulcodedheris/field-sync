@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, ChevronDown, Filter, Plus, Download, TrendingDown, TrendingUp, Truck, AlertTriangle, Clock, Check } from 'lucide-react';
+import { PartRequestModal } from '../components/PartRequestModal';
 
 // Mock data for inventory items
 const mockInventoryItems = [
@@ -127,6 +128,8 @@ const getActionButton = (action: string) => {
 
 export const TechnicianInventory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPartRequestModalOpen, setIsPartRequestModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div className=" sm:p-6 space-y-6 sm:space-y-8">
@@ -200,7 +203,10 @@ export const TechnicianInventory: React.FC = () => {
               <Filter className="w-4 h-4" />
               <span>Filter</span>
             </button>
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm">
+            <button 
+              onClick={() => setIsPartRequestModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm"
+            >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Request New Part</span>
               <span className="sm:hidden">Request</span>
@@ -327,13 +333,26 @@ export const TechnicianInventory: React.FC = () => {
               <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center text-sm font-medium">
                 3
               </button>
-              <button className="px-4 py-2 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center text-sm font-medium">
+              <button 
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="px-4 py-2 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
                 Next
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <PartRequestModal
+        isOpen={isPartRequestModalOpen}
+        onClose={() => setIsPartRequestModalOpen(false)}
+        onSubmit={(requestData) => {
+          console.log('Part request submitted:', requestData);
+          setIsPartRequestModalOpen(false);
+        }}
+      />
     </div>
   );
 };

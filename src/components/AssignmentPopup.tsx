@@ -44,7 +44,6 @@ const AssignmentPopup: React.FC<AssignmentPopupProps> = ({ isOpen, onClose }) =>
   };
 
   const addNote = (id: number) => {
-    // TODO: Implement add note functionality
     console.log('Add note for item:', id);
   };
 

@@ -16,25 +16,8 @@ interface JobEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (jobData: any) => void;
-  job: {
-    id: string;
-    title: string;
-    technician: {
-      name: string;
-      avatar: string;
-    };
-    client: {
-      name: string;
-      address: string;
-    };
-    priority: string;
-    status: string;
-    cost: string;
-    schedule: {
-      date: string;
-      duration: string;
-    };
-  } | null;
+  // Accept a broad shape so we can open this modal from either a Job or a WorkOrder
+  job: any | null;
 }
 
 export const JobEditModal: React.FC<JobEditModalProps> = ({
@@ -57,18 +40,57 @@ export const JobEditModal: React.FC<JobEditModalProps> = ({
     jobType: 'HVAC Maintenance'
   });
 
+  const normalizePriority = (priority: any): string => {
+    if (!priority) return 'Medium';
+    const value = String(priority).toLowerCase();
+    if (value.includes('urgent')) return 'Urgent';
+    if (value.includes('high')) return 'High';
+    if (value.includes('low')) return 'Low';
+    return 'Medium';
+  };
+
+  const normalizeStatus = (status: any): string => {
+    if (!status) return 'To-do';
+    const value = String(status).toLowerCase();
+    if (value.includes('in_progress')) return 'In Progress';
+    if (value.includes('completed')) return 'Completed';
+    if (value.includes('hold')) return 'On Hold';
+    return 'To-do';
+  };
+
+  const computeDuration = (start?: string, end?: string): string => {
+    if (!start || !end) return '';
+    const ms = new Date(end).getTime() - new Date(start).getTime();
+    if (ms <= 0) return '';
+    const minutes = Math.round(ms / 60000);
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const rem = minutes % 60;
+    return rem ? `${hours}h ${rem}m` : `${hours}h`;
+  };
+
   useEffect(() => {
     if (job) {
+      const title = job.title ?? job.name ?? '';
+      const clientName = job.client?.name ?? job.clientName ?? '';
+      const clientAddress = job.client?.address ?? job.primaryLocation ?? '';
+      const technicianName = job.technician?.name ?? job.primaryTechnician?.name ?? '';
+      const priority = normalizePriority(job.priority);
+      const status = normalizeStatus(job.status);
+      const cost = job.cost ?? '';
+      const date = job.schedule?.date ?? (job.scheduledStart ? new Date(job.scheduledStart).toLocaleString() : '');
+      const duration = job.schedule?.duration ?? computeDuration(job.scheduledStart, job.scheduledEnd) ?? '';
+
       setFormData({
-        title: job.title,
-        clientName: job.client.name,
-        clientAddress: job.client.address,
-        technicianName: job.technician.name,
-        priority: job.priority,
-        status: job.status,
-        cost: job.cost,
-        date: job.schedule.date,
-        duration: job.schedule.duration,
+        title,
+        clientName,
+        clientAddress,
+        technicianName,
+        priority,
+        status,
+        cost,
+        date,
+        duration,
         description: '',
         jobType: 'HVAC Maintenance'
       });

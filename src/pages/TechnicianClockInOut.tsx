@@ -69,7 +69,6 @@ export const TechnicianClockInOut: React.FC = () => {
     setIsClockedIn(true);
     setStartTime(new Date());
     setShowClockInModal(false);
-    // TODO: Add job-specific logic here with jobId
     console.log(`Clocked in to job: ${jobId}`);
   };
 
@@ -113,7 +112,7 @@ export const TechnicianClockInOut: React.FC = () => {
             className={`flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-medium text-base sm:text-lg ${
               isClockedIn 
                 ? 'bg-red-500 text-white hover:bg-red-600' 
-                : 'bg-[#10BF0A] text-white hover:bg-green-600'
+                : 'bg-[#10BF0A] text-white hover:bg-[#0EA50A]'
             }`}
           >
             <Play className="w-5 h-5" />

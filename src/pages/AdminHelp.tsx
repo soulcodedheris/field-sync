@@ -492,15 +492,30 @@ export const AdminHelp: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-sm sm:text-[14px] text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
-              <span>support@fieldsync.com</span>
+              <span 
+                className="text-[#10BF0A] cursor-pointer hover:underline"
+                onClick={() => window.open('mailto:support@fieldsync.com')}
+              >
+                support@fieldsync.com
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
-              <span>(555) 123-4567</span>
+              <span 
+                className="text-[#10BF0A] cursor-pointer hover:underline"
+                onClick={() => window.open('tel:(555) 123-4567')}
+              >
+                (555) 123-4567
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <MessageCircle className="w-4 h-4" />
-              <span>Live Chat</span>
+              <span 
+                className="text-[#10BF0A] cursor-pointer hover:underline"
+                onClick={() => console.log('Live chat clicked')}
+              >
+                Live Chat
+              </span>
             </div>
           </div>
           <p className="text-[12px] text-gray-600 dark:text-gray-400">

@@ -17,12 +17,48 @@ import {
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
+import { BillingFilterModal } from '../components/BillingFilterModal';
+import { BillingExportModal } from '../components/BillingExportModal';
+import { CompanyViewModal } from '../components/CompanyViewModal';
+import { CompanyDeleteModal } from '../components/CompanyDeleteModal';
 
 export const SuperAdminPlansBilling: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [selectedPlan, setSelectedPlan] = useState('All Plans');
+  
+  // Modal states
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [companyToDelete, setCompanyToDelete] = useState<any>(null);
+
+  // Handler functions
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
+
+  const handleExport = (config: any) => {
+    console.log('Exporting with config:', config);
+  };
+
+  const handleViewCompany = (company: any) => {
+    setSelectedCompany(company);
+  };
+
+  const handleDeleteCompany = (companyId: number) => {
+    console.log('Deleting company:', companyId);
+    setCompanyToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = (company: any) => {
+    setCompanyToDelete(company);
+    setIsDeleteModalOpen(true);
+  };
 
   const stats = [
     {
@@ -193,7 +229,7 @@ export const SuperAdminPlansBilling: React.FC = () => {
                 placeholder="search...."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full text-sm sm:text-base text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -212,13 +248,19 @@ export const SuperAdminPlansBilling: React.FC = () => {
             </button>
 
             {/* Filter Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors">
+            <button 
+              onClick={() => setIsFilterModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm hover:bg-[#0EA50A] transition-colors"
+            >
               <Filter className="w-4 h-4" />
               <span className="hidden sm:inline">Filter</span>
             </button>
 
             {/* Export Button */}
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setIsExportModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Export</span>
             </button>
@@ -275,10 +317,16 @@ export const SuperAdminPlansBilling: React.FC = () => {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
-                  <button className="p-1 sm:p-2 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <button 
+                    onClick={() => handleViewCompany(company)}
+                    className="p-1 sm:p-2 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
                     <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   </button>
-                  <button className="p-1 sm:p-2 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors">
+                  <button 
+                    onClick={() => handleOpenDeleteModal(company)}
+                    className="p-1 sm:p-2 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors"
+                  >
                     <Trash className="w-4 h-4 text-[#F44336]" />
                   </button>
                 </div>
@@ -294,12 +342,41 @@ export const SuperAdminPlansBilling: React.FC = () => {
             <button className="px-3 py-1 bg-[#10BF0A] text-white rounded text-sm hover:bg-[#0EA50A] transition-colors">1</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
             <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
-            <button className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 py-1 border border-[#EBEBEB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Next
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <BillingFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
+
+      <BillingExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
+      />
+
+      <CompanyViewModal
+        isOpen={!!selectedCompany}
+        onClose={() => setSelectedCompany(null)}
+        company={selectedCompany}
+      />
+
+      <CompanyDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteCompany}
+        company={companyToDelete}
+      />
     </div>
   );
 };

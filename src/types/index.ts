@@ -141,7 +141,7 @@ export interface TimeEntry {
   clockIn: string;
   clockOut?: string;
   duration?: number; // in minutes
-  status: 'active' | 'completed' | 'approved' | 'rejected';
+  status: 'active' | 'completed' | 'approved' | 'rejected' | 'pending';
   notes?: string;
   approvedBy?: string;
   approvedAt?: string;

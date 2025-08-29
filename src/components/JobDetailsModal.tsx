@@ -114,7 +114,7 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
       case 'Medium':
         return 'bg-yellow-100 text-yellow-600 border-yellow-300';
       case 'Low':
-        return 'bg-green-100 text-green-600 border-green-300';
+        return 'bg-green-100 text-[#10BF0A] border-green-300';
       default:
         return 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300';
     }

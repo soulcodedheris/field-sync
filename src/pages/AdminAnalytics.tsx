@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import {
   TrendingUp,
@@ -15,6 +15,7 @@ import userAvatar3 from '../assets/user-avatar-3.png';
 
 export const AdminAnalytics: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const statCards = [
     {
@@ -293,7 +294,7 @@ export const AdminAnalytics: React.FC = () => {
             <input
               type="text"
               placeholder="search...."
-              className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
         </div>
@@ -390,7 +391,10 @@ export const AdminAnalytics: React.FC = () => {
             <button className="w-8 h-8 bg-[#10BF0A] text-white rounded text-sm font-medium">1</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">2</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">3</button>
-            <button className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
               <span className="hidden sm:inline">Next</span>
               <span className="sm:hidden">→</span>
             </button>

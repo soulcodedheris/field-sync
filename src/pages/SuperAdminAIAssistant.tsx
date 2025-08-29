@@ -14,6 +14,22 @@ import alexAvatar from '../assets/alex-avatar.png';
 
 export const SuperAdminAIAssistant: React.FC = () => {
   const { user } = useAuthStore();
+
+  const handleViewSOPDocument = () => {
+    console.log('View SOP document clicked');
+  };
+
+  const handleCategoryClick = (category: string) => {
+    console.log('Category clicked:', category);
+  };
+
+  const handleAttach = () => {
+    console.log('Attach clicked');
+  };
+
+  const handleVoice = () => {
+    console.log('Voice clicked');
+  };
   const [message, setMessage] = useState('');
   const [savedMessages, setSavedMessages] = useState<Set<number>>(new Set([2]));
 
@@ -133,7 +149,10 @@ Expert Help: Repeat the test to confirm the adjustments were successful. Create 
                   <div className="space-y-4 sm:space-y-6">
                     <p className="text-sm sm:text-lg text-black dark:text-white whitespace-pre-line break-words">{msg.content}</p>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-3 sm:pt-4 border-t border-[#EBEBEB]">
-                      <button className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+                      <button 
+                        onClick={handleViewSOPDocument}
+                        className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                      >
                         <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
                         <span>View SOP Document</span>
                       </button>
@@ -163,15 +182,24 @@ Expert Help: Repeat the test to confirm the adjustments were successful. Create 
         <div className="space-y-4">
           {/* Category Buttons */}
           <div className="flex flex-wrap items-center gap-2">
-            <button className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors">
+            <button 
+              onClick={() => handleCategoryClick('SOPs')}
+              className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors"
+            >
               <FileText className="w-3 h-3" />
               <span>SOPs</span>
             </button>
-            <button className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors">
+            <button 
+              onClick={() => handleCategoryClick('Manuals')}
+              className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors"
+            >
               <div className="w-3 h-3 border border-gray-600 rounded-sm"></div>
               <span>Manuals</span>
             </button>
-            <button className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors">
+            <button 
+              onClick={() => handleCategoryClick('Equipment')}
+              className="flex items-center gap-2 px-2 py-1 bg-[rgba(202,202,202,0.8)] rounded text-xs text-gray-600 hover:bg-gray-300 transition-colors"
+            >
               <div className="w-3 h-3 border border-gray-600 rounded-sm"></div>
               <span>Equipment</span>
             </button>
@@ -203,11 +231,17 @@ Expert Help: Repeat the test to confirm the adjustments were successful. Create 
               Press Enter to send, Shift+Enter for new line
             </span>
             <div className="flex items-center gap-4">
-              <button className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+              <button 
+                onClick={handleAttach}
+                className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+              >
                 <Link className="w-3 h-3" />
                 <span>Attach</span>
               </button>
-              <button className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+              <button 
+                onClick={handleVoice}
+                className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+              >
                 <Mic className="w-3 h-3" />
                 <span>Voice</span>
               </button>

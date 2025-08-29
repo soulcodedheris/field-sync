@@ -87,6 +87,11 @@ export const SuperAdminSettings: React.FC = () => {
     });
   };
 
+  const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
+  const handleEditPermissions = () => {
+    setIsPermissionsModalOpen(true);
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Platform Information */}
@@ -408,22 +413,78 @@ export const SuperAdminSettings: React.FC = () => {
                   <div className="text-base sm:text-lg font-medium text-black dark:text-white">Admin</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Full platform access and user management</div>
                 </div>
-                <button className="text-[#10BF0A] font-medium hover:text-[#0EA50A] transition-colors">Edit Permissions</button>
+                <button 
+                  onClick={handleEditPermissions}
+                  className="text-[#10BF0A] font-medium hover:text-[#0EA50A] transition-colors"
+                >
+                  Edit Permissions
+                </button>
               </div>
             </div>
 
             <div className="border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-4">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <div>
-                  <div className="text-base sm:text-lg font-medium text-black dark:text-white">Technician</div>
+                  <div className="text-base sm:text-base font-medium text-black dark:text-white">Technician</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Basic platform access and features</div>
                 </div>
-                <button className="text-[#10BF0A] font-medium hover:text-[#0EA50A] transition-colors">Edit Permissions</button>
+                <button 
+                  onClick={handleEditPermissions}
+                  className="text-[#10BF0A] font-medium hover:text-[#0EA50A] transition-colors"
+                >
+                  Edit Permissions
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Permissions Modal */}
+      {isPermissionsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md border border-[#EBEBEB] dark:border-gray-700">
+            <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-2">Edit Permissions</h3>
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black dark:text-white">Manage Users</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" defaultChecked className="sr-only peer" />
+                  <div className="w-11 h-6 rounded-full peer bg-[#10BF0A]">
+                    <div className="w-5 h-5 bg-white dark:bg-gray-700 rounded-full translate-x-5 mt-0.5"></div>
+                  </div>
+                </label>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black dark:text-white">View Audit Logs</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" defaultChecked className="sr-only peer" />
+                  <div className="w-11 h-6 rounded-full peer bg-[#10BF0A]">
+                    <div className="w-5 h-5 bg-white dark:bg-gray-700 rounded-full translate-x-5 mt-0.5"></div>
+                  </div>
+                </label>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black dark:text-white">Billing Access</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" className="sr-only peer" />
+                  <div className="w-11 h-6 rounded-full peer bg-[#E5E7EB]">
+                    <div className="w-5 h-5 bg-white dark:bg-gray-700 rounded-full translate-x-0.5 mt-0.5"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button 
+                onClick={() => setIsPermissionsModalOpen(false)}
+                className="px-4 py-2 border border-[#EBEBEB] rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* AI Assistant Settings */}
       <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-4 sm:p-6">

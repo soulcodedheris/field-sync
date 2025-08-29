@@ -27,7 +27,9 @@ import { TechnicianSettings } from './pages/TechnicianSettings';
 import { TechnicianHelp } from './pages/TechnicianHelp';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminJobManagement } from './pages/AdminJobManagement';
+import { AdminProjectManagement } from './pages/AdminProjectManagement';
 import { AdminTeamManagement } from './pages/AdminTeamManagement';
+import { AdminTimeEntries } from './pages/AdminTimeEntries';
 import { AdminAnalytics } from './pages/AdminAnalytics';
 import { AdminSchedule } from './pages/AdminSchedule';
 import { AdminInventory } from './pages/AdminInventory';
@@ -177,10 +179,12 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="job-management" element={<AdminJobManagement />} />
-            <Route path="team-management" element={<AdminTeamManagement />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
+                          <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="project-management" element={<AdminProjectManagement />} />
+              <Route path="job-management" element={<AdminJobManagement />} />
+              <Route path="team-management" element={<AdminTeamManagement />} />
+              <Route path="time-entries" element={<AdminTimeEntries />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="schedule" element={<AdminSchedule />} />
             <Route path="inventory" element={<AdminInventory />} />
             <Route path="audit-log" element={<AdminAuditLog />} />

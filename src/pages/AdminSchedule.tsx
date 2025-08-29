@@ -13,10 +13,18 @@ import {
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
+import { JobAssignmentModal } from '../components/JobAssignmentModal';
+import { AlertConfigurationModal } from '../components/AlertConfigurationModal';
+import { AISuggestionsModal } from '../components/AISuggestionsModal';
 
 export const AdminSchedule: React.FC = () => {
   const { user } = useAuthStore();
   const [selectedView, setSelectedView] = useState('weekly');
+  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [selectedTechDetails, setSelectedTechDetails] = useState<any>(null);
+  const [isJobAssignmentModalOpen, setIsJobAssignmentModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [isAISuggestionsModalOpen, setIsAISuggestionsModalOpen] = useState(false);
 
   const technicians = [
     {
@@ -91,6 +99,42 @@ export const AdminSchedule: React.FC = () => {
     }
   ];
 
+  const handleTechnicianClick = (tech: any) => {
+    setSelectedTechDetails(tech);
+  };
+
+  const handleJobClick = (job: any) => {
+    setSelectedJob(job);
+  };
+
+  const handlePriorityFilter = (priority: string) => {
+    console.log('Filtering by priority:', priority);
+  };
+
+  const handleNewJobAssignment = () => {
+    setIsJobAssignmentModalOpen(true);
+  };
+
+  const handleAssignJob = (jobData: any) => {
+    console.log('Assign job:', jobData);
+  };
+
+  const handleSendAlerts = () => {
+    setIsAlertModalOpen(true);
+  };
+
+  const handleAISuggestions = () => {
+    setIsAISuggestionsModalOpen(true);
+  };
+
+  const handleSendAlert = (alertData: any) => {
+    console.log('Send alert:', alertData);
+  };
+
+  const handleApplyAISuggestion = (suggestion: any) => {
+    console.log('Apply AI suggestion:', suggestion);
+  };
+
   const calendarData = [
     {
       technician: 'Mike Chen',
@@ -155,7 +199,11 @@ export const AdminSchedule: React.FC = () => {
           {/* Technicians List */}
           <div className="p-2 max-h-48 sm:max-h-64 lg:max-h-96 overflow-y-auto">
             {technicians.map((tech) => (
-              <div key={tech.id} className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-2 sm:p-3 mb-2 hover:shadow-sm transition-shadow cursor-pointer">
+              <div 
+                key={tech.id} 
+                onClick={() => handleTechnicianClick(tech)}
+                className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-2 sm:p-3 mb-2 hover:shadow-sm transition-shadow cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-1 sm:mb-2">
                   <span className="text-xs sm:text-sm font-medium text-black dark:text-white truncate flex-1 mr-2">{tech.name}</span>
                   <div 
@@ -278,7 +326,8 @@ export const AdminSchedule: React.FC = () => {
                         (tech[day as keyof typeof tech] as any[])?.map((job: any, jobIndex: number) => (
                           <div
                             key={jobIndex}
-                            className="px-1 py-0.5 sm:py-1 rounded text-xs text-white mb-0.5 sm:mb-1 truncate cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => handlePriorityFilter(job.priority)}
+                className="px-1 py-0.5 sm:py-1 rounded text-xs text-white mb-0.5 sm:mb-1 truncate cursor-pointer hover:opacity-80 transition-opacity"
                             style={{ backgroundColor: job.color }}
                             title={job.title}
                           >
@@ -303,7 +352,11 @@ export const AdminSchedule: React.FC = () => {
           {/* Unassigned Jobs List */}
           <div className="p-2 sm:p-4 space-y-2 max-h-48 sm:max-h-64 lg:max-h-96 overflow-y-auto">
             {unassignedJobs.map((job) => (
-              <div key={job.id} className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-2 sm:p-3 hover:shadow-sm transition-shadow cursor-pointer">
+              <div 
+                key={job.id} 
+                onClick={() => handleJobClick(job)}
+                className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-2 sm:p-3 hover:shadow-sm transition-shadow cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-1 sm:mb-2">
                   <span className="text-xs sm:text-sm font-medium text-black dark:text-white truncate flex-1 mr-2">{job.title}</span>
                   <div 
@@ -330,17 +383,26 @@ export const AdminSchedule: React.FC = () => {
           <div className="p-3 sm:p-4 border-t border-[#EBEBEB]">
             <h4 className="text-sm sm:text-base lg:text-lg font-medium text-black dark:text-white mb-3 sm:mb-4">Quick Actions</h4>
             <div className="space-y-2">
-              <button className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleNewJobAssignment}
+                className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">New Job Assignment</span>
                 <span className="sm:hidden">New Job</span>
               </button>
-              <button className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleSendAlerts}
+                className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <Bell className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Send Alerts</span>
                 <span className="sm:hidden">Alerts</span>
               </button>
-              <button className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleAISuggestions}
+                className="w-full flex items-center justify-center gap-1 px-2 sm:px-3 lg:px-4 py-2 border border-[#EBEBEB] rounded text-xs sm:text-sm text-[#10BF0A] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <Bot className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">AI Suggestions</span>
                 <span className="sm:hidden">AI</span>
@@ -448,7 +510,11 @@ export const AdminSchedule: React.FC = () => {
           </div>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {technicians.map((tech) => (
-              <div key={tech.id} className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer">
+              <div 
+                key={tech.id} 
+                onClick={() => handleTechnicianClick(tech)}
+                className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-black dark:text-white text-sm truncate">{tech.name}</div>
@@ -476,7 +542,11 @@ export const AdminSchedule: React.FC = () => {
           <h3 className="text-base font-medium text-black dark:text-white mb-3">Unassigned Jobs</h3>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {unassignedJobs.map((job) => (
-              <div key={job.id} className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer">
+              <div 
+                key={job.id} 
+                onClick={() => handleJobClick(job)}
+                className="bg-gray-50 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-black dark:text-white truncate flex-1 mr-2">{job.title}</span>
                   <div 
@@ -541,6 +611,28 @@ export const AdminSchedule: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Job Assignment Modal */}
+      <JobAssignmentModal
+        isOpen={isJobAssignmentModalOpen}
+        onClose={() => setIsJobAssignmentModalOpen(false)}
+        onAssign={handleAssignJob}
+        technicians={technicians}
+      />
+
+      {/* Alert Configuration Modal */}
+      <AlertConfigurationModal
+        isOpen={isAlertModalOpen}
+        onClose={() => setIsAlertModalOpen(false)}
+        onSend={handleSendAlert}
+      />
+
+      {/* AI Suggestions Modal */}
+      <AISuggestionsModal
+        isOpen={isAISuggestionsModalOpen}
+        onClose={() => setIsAISuggestionsModalOpen(false)}
+        onApply={handleApplyAISuggestion}
+      />
     </div>
   );
 };

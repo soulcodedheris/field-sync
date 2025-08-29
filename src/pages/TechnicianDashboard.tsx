@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   MapPin,
   Calendar as CalendarIcon,
@@ -123,6 +124,29 @@ const mockAnnouncements = [
 
 export const TechnicianDashboard: React.FC = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const [isClockedIn, setIsClockedIn] = useState(false);
+  const [safetyChecklistCompleted, setSafetyChecklistCompleted] = useState(false);
+
+  const handleStartJob = () => {
+    navigate('/technician/jobs');
+  };
+
+  const handleViewDetails = () => {
+    navigate('/technician/jobs');
+  };
+
+  const handleClockIn = () => {
+    setIsClockedIn(true);
+  };
+
+  const handleViewJobs = () => {
+    navigate('/technician/jobs');
+  };
+
+  const handleNavigation = () => {
+    navigate('/technician/navigation');
+  };
   const [isSafetyChecklistOpen, setIsSafetyChecklistOpen] = useState(false);
 
   const getStatusBadge = (status: string) => {
@@ -306,11 +330,17 @@ export const TechnicianDashboard: React.FC = () => {
           </div>
 
             <div className="flex flex-wrap gap-2">
-              <button className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors">
+              <button 
+                onClick={handleStartJob}
+                className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors"
+              >
                 <Play className="w-4 h-4" />
                 Start Job
               </button>
-              <button className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleViewDetails}
+                className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <FileText className="w-4 h-4" />
                 View Details
               </button>
@@ -322,15 +352,25 @@ export const TechnicianDashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6">
           <h2 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-4 sm:mb-6">Quick Actions</h2>
           <div className="space-y-3 sm:space-y-4">
-            <button className="w-full flex items-center gap-3 p-3 sm:p-4 bg-[#10BF0A] text-white rounded-lg hover:bg-[#0EA509] transition-colors">
+            <button 
+              onClick={handleClockIn}
+              disabled={isClockedIn}
+              className={`w-full flex items-center gap-3 p-3 sm:p-4 rounded-lg transition-colors ${isClockedIn ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#10BF0A] text-white hover:bg-[#0EA509]'}`}
+            >
               <ClockIcon className="w-5 h-5" />
-              <span className="font-medium">Clock In</span>
+              <span className="font-medium">{isClockedIn ? 'Clocked In' : 'Clock In'}</span>
             </button>
-            <button className="w-full flex items-center gap-3 p-3 sm:p-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={handleViewJobs}
+              className="w-full flex items-center gap-3 p-3 sm:p-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               <Briefcase className="w-5 h-5" />
               <span className="font-medium">View Jobs</span>
             </button>
-            <button className="w-full flex items-center gap-3 p-3 sm:p-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={handleNavigation}
+              className="w-full flex items-center gap-3 p-3 sm:p-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               <Navigation className="w-5 h-5" />
               <span className="font-medium">Navigation</span>
             </button>
@@ -427,9 +467,8 @@ export const TechnicianDashboard: React.FC = () => {
       <SafetyChecklistModal
         isOpen={isSafetyChecklistOpen}
         onClose={() => setIsSafetyChecklistOpen(false)}
-        onComplete={(completedItems) => {
-          console.log('Safety checklist completed:', completedItems);
-          // TODO: Update safety status in the dashboard
+        onComplete={() => {
+          setSafetyChecklistCompleted(true);
         }}
       />
     </div>

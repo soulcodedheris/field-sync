@@ -18,14 +18,20 @@ import {
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
+import { AuditLogFilterModal } from '../components/AuditLogFilterModal';
+import { AuditLogExportModal } from '../components/AuditLogExportModal';
 
 export const AdminAuditLog: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('mm/dd/yyyy');
   const [selectedTechnician, setSelectedTechnician] = useState('All Technicians');
   const [selectedActivity, setSelectedActivity] = useState('All Activity');
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Modal states
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   const auditLogData = [
     {
@@ -94,6 +100,14 @@ export const AdminAuditLog: React.FC = () => {
       details: "Updated from 'In Progress' to 'Completed'"
     }
   ];
+
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
+
+  const handleExport = (config: any) => {
+    console.log('Exporting with config:', config);
+  };
 
   const stats = [
     {
@@ -217,13 +231,19 @@ export const AdminAuditLog: React.FC = () => {
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {/* Filter Button */}
-              <button className="flex items-center gap-1 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-xs sm:text-sm font-medium">
+              <button 
+                onClick={() => setIsFilterModalOpen(true)}
+                className="flex items-center gap-1 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-xs sm:text-sm font-medium"
+              >
                 <Filter className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>Filter</span>
               </button>
 
               {/* Export Button */}
-              <button className="flex items-center gap-1 px-3 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-xs sm:text-sm text-black dark:text-white">
+              <button 
+                onClick={() => setIsExportModalOpen(true)}
+                className="flex items-center gap-1 px-3 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-xs sm:text-sm text-black dark:text-white"
+              >
                 <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>Export</span>
               </button>
@@ -334,18 +354,37 @@ export const AdminAuditLog: React.FC = () => {
             Showing 1 to 3 of 847 results
           </span>
           <div className="flex items-center gap-1 sm:gap-2">
-            <button className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <button 
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
               Previous
             </button>
             <button className="px-2 sm:px-3 py-1 sm:py-2 bg-[#10BF0A] text-white rounded text-xs sm:text-sm">1</button>
             <button className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">2</button>
             <button className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">3</button>
-            <button className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-2 sm:px-3 py-1 sm:py-2 border border-[#D1D5DB] rounded text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
               Next
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <AuditLogFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
+
+      <AuditLogExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
+      />
     </div>
   );
 };

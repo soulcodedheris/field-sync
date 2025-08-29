@@ -10,10 +10,19 @@ import {
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
+import { UserAddModal } from '../components/UserAddModal';
+import { UserEditModal } from '../components/UserEditModal';
+import { UserDeleteModal } from '../components/UserDeleteModal';
 
 export const AdminTeamManagement: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedTechnicians, setSelectedTechnicians] = useState<string[]>([]);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [deletingUser, setDeletingUser] = useState<any>(null);
 
   const technicians = [
     {
@@ -77,6 +86,34 @@ export const AdminTeamManagement: React.FC = () => {
     }
   };
 
+  const handleAddUser = (userData: any) => {
+    console.log('Adding user:', userData);
+    // Add to technicians array
+    technicians.push(userData);
+  };
+
+  const handleEditUser = (userData: any) => {
+    console.log('Editing user:', userData);
+    setEditingUser(null);
+  };
+
+  const handleDeleteUser = () => {
+    if (deletingUser) {
+      console.log('Deleting user:', deletingUser.id);
+      setDeletingUser(null);
+    }
+  };
+
+  const handleOpenEditModal = (user: any) => {
+    setEditingUser(user);
+    setIsEditUserModalOpen(true);
+  };
+
+  const handleOpenDeleteModal = (user: any) => {
+    setDeletingUser(user);
+    setIsDeleteUserModalOpen(true);
+  };
+
   return (
     <div className=" sm:p-6 space-y-6 sm:space-y-8">
       {/* Header Section */}
@@ -99,11 +136,14 @@ export const AdminTeamManagement: React.FC = () => {
               <input
                 type="text"
                 placeholder="search...."
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
           </div>
-          <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA50A] transition-colors">
+          <button 
+            onClick={() => setIsAddUserModalOpen(true)}
+            className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA50A] transition-colors"
+          >
             <Plus className="w-5 h-5" />
             <span className="hidden sm:inline">Add User</span>
             <span className="sm:hidden">Add</span>
@@ -138,10 +178,16 @@ export const AdminTeamManagement: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-1">
-                    <button className="p-2 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <button 
+                      onClick={() => handleOpenEditModal(technician)}
+                      className="p-2 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
                       <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                     </button>
-                    <button className="p-2 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors">
+                    <button 
+                      onClick={() => handleOpenDeleteModal(technician)}
+                      className="p-2 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors"
+                    >
                       <Trash className="w-4 h-4 text-[#F44336]" />
                     </button>
                   </div>
@@ -234,10 +280,16 @@ export const AdminTeamManagement: React.FC = () => {
                   <td className="px-4 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{technician.totalHours}</td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="p-1 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <button 
+                        onClick={() => handleOpenEditModal(technician)}
+                        className="p-1 border border-[#E5E7EB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
                         <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </button>
-                      <button className="p-1 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors">
+                      <button 
+                        onClick={() => handleOpenDeleteModal(technician)}
+                        className="p-1 border border-[#E5E7EB] rounded hover:bg-red-50 transition-colors"
+                      >
                         <Trash className="w-4 h-4 text-[#F44336]" />
                       </button>
                     </div>
@@ -255,13 +307,37 @@ export const AdminTeamManagement: React.FC = () => {
             <button className="w-8 h-8 bg-[#10BF0A] text-white rounded text-sm font-medium">1</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">2</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">3</button>
-            <button className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
               <span className="hidden sm:inline">Next</span>
               <span className="sm:hidden">→</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <UserAddModal
+        isOpen={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+        onSave={handleAddUser}
+      />
+
+      <UserEditModal
+        isOpen={isEditUserModalOpen}
+        onClose={() => setIsEditUserModalOpen(false)}
+        onSave={handleEditUser}
+        user={editingUser}
+      />
+
+      <UserDeleteModal
+        isOpen={isDeleteUserModalOpen}
+        onClose={() => setIsDeleteUserModalOpen(false)}
+        onConfirm={handleDeleteUser}
+        user={deletingUser}
+      />
     </div>
   );
 };

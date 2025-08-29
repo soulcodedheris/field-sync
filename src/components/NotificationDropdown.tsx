@@ -41,6 +41,14 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
   const [selectedFilter, setSelectedFilter] = useState('All');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const handleNotificationClick = (notification: Notification) => {
+    console.log('Notification clicked:', notification);
+  };
+
+  const handleViewAllNotifications = () => {
+    console.log('View all notifications clicked');
+  };
+
   // Sample notification data
   const notifications: Notification[] = [
     {
@@ -228,6 +236,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
               {filteredNotifications.map((notification, index) => (
                 <div
                   key={notification.id}
+                  onClick={() => handleNotificationClick(notification)}
                   className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
                     !notification.isRead ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                   } ${index === 0 ? 'pt-2' : ''}`}
@@ -292,7 +301,10 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-          <button className="w-full px-4 py-2 text-sm font-medium text-[#10BF0A] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors">
+          <button 
+            onClick={handleViewAllNotifications}
+            className="w-full px-4 py-2 text-sm font-medium text-[#10BF0A] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+          >
             View All Notifications
           </button>
         </div>

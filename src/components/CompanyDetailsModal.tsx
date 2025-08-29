@@ -100,6 +100,14 @@ export const CompanyDetailsModal: React.FC<CompanyDetailsModalProps> = ({
     }
   };
 
+  const handleViewAllUsers = () => {
+    console.log('View all users clicked');
+  };
+
+  const handleSendMessage = () => {
+    console.log('Send message clicked');
+  };
+
   // Mock additional data
   const companyDetails = {
     phone: '+1 (555) 123-4567',
@@ -337,7 +345,10 @@ export const CompanyDetailsModal: React.FC<CompanyDetailsModalProps> = ({
                 ))}
               </div>
               
-              <button className="w-full py-2 border border-[#E5E7EB] text-[#6C6C6C] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleViewAllUsers}
+                className="w-full py-2 border border-[#E5E7EB] text-[#6C6C6C] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 View All Users
               </button>
             </div>
@@ -414,7 +425,10 @@ export const CompanyDetailsModal: React.FC<CompanyDetailsModalProps> = ({
             Close
           </button>
           <div className="flex gap-3">
-            <button className="px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={handleSendMessage}
+              className="px-4 py-2 border border-[#E5E7EB] text-black dark:text-white rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors"
+            >
               Send Message
             </button>
             <button

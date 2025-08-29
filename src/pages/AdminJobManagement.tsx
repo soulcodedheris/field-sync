@@ -28,10 +28,13 @@ import { JobEditModal } from '../components/JobEditModal';
 import { JobDeleteModal } from '../components/JobDeleteModal';
 import { BulkActionsModal } from '../components/BulkActionsModal';
 import { TechnicianAssignmentModal } from '../components/TechnicianAssignmentModal';
+import { ExportModal } from '../components/ExportModal';
+import { JobStatusFilterModal } from '../components/JobStatusFilterModal';
 import type { Job, WorkOrder } from '../types';
 
 export const AdminJobManagement: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedTab, setSelectedTab] = useState('all');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [selectedWorkOrders, setSelectedWorkOrders] = useState<string[]>([]);
@@ -41,6 +44,8 @@ export const AdminJobManagement: React.FC = () => {
   const [isBulkActionsOpen, setIsBulkActionsOpen] = useState(false);
   const [isTechnicianAssignmentOpen, setIsTechnicianAssignmentOpen] = useState(false);
   const [selectedJobForAssignment, setSelectedJobForAssignment] = useState<any>(null);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isStatusFilterModalOpen, setIsStatusFilterModalOpen] = useState(false);
   
   // New state for hierarchy toggle
   const [isHierarchicalView, setIsHierarchicalView] = useState(false);
@@ -55,14 +60,12 @@ export const AdminJobManagement: React.FC = () => {
   };
 
   const handleSaveJob = (updatedJob: any) => {
-    // TODO: Implement job update logic
     console.log('Saving job:', updatedJob);
     setEditingJob(null);
   };
 
   const handleConfirmDelete = () => {
     if (deletingJob) {
-      // TODO: Implement job deletion logic
       console.log('Deleting job:', deletingJob.id);
       setDeletingJob(null);
     }
@@ -70,7 +73,6 @@ export const AdminJobManagement: React.FC = () => {
 
   const handleBulkAction = (action: string, data?: any) => {
     console.log('Bulk action:', action, 'for jobs:', selectedJobs, 'with data:', data);
-    // TODO: Implement bulk action logic
     setSelectedJobs([]);
     setIsBulkActionsOpen(false);
   };
@@ -80,11 +82,26 @@ export const AdminJobManagement: React.FC = () => {
     setIsTechnicianAssignmentOpen(true);
   };
 
-  const handleTechnicianAssignment = (technicianId: number, jobId: string) => {
+  const handleTechnicianAssignment = (jobId: string, technicianId: string) => {
     console.log('Assigning technician', technicianId, 'to job', jobId);
-    // TODO: Implement technician assignment logic
     setIsTechnicianAssignmentOpen(false);
     setSelectedJobForAssignment(null);
+  };
+
+  const handleExport = (exportData: any) => {
+    console.log('Exporting data:', exportData);
+  };
+
+  const handleStatusFilter = () => {
+    setIsStatusFilterModalOpen(true);
+  };
+
+  const handlePriorityFilter = () => {
+    setIsStatusFilterModalOpen(true);
+  };
+
+  const handleApplyFilters = (filters: any) => {
+    console.log('Applying filters:', filters);
   };
 
   const statCards = [
@@ -134,39 +151,37 @@ export const AdminJobManagement: React.FC = () => {
   const jobsData: Job[] = [
     {
       id: 'JOB-2024-001',
-      title: 'HVAC System Installation',
-      description: 'Complete HVAC system installation for new office building',
-      client: {
-        name: 'Acme Corp',
-        address: '123 Main St, Downtown',
-        contact: 'John Smith'
-      },
-      priority: 'High',
-      status: 'In Progress',
-      estimatedCost: 15000,
-      actualCost: 14200,
+      name: 'HVAC System Installation',
+      jobType: 'installation',
+      status: 'active',
+      clientName: 'Acme Corp',
+      clientContact: 'John Smith',
       startDate: '2024-01-15',
       endDate: '2024-02-15',
+      budget: 15000,
+      primaryLocation: '123 Main St, Downtown',
+      jobsites: [],
+      checklistTemplates: [],
       workOrders: [
         {
           id: 'WO-2024-001-01',
           jobId: 'JOB-2024-001',
           title: 'Ductwork Installation',
           description: 'Install main ductwork system',
-          technician: {
+          type: 'install',
+          priority: 'high',
+          status: 'in_progress',
+          scheduledStart: '2024-01-15T14:00:00Z',
+          scheduledEnd: '2024-01-15T16:00:00Z',
+          estimatedMinutes: 120,
+          primaryTechnician: {
             id: 'tech-001',
             name: 'John Doe',
             avatar: userAvatar1
           },
-          status: 'In Progress',
-          priority: 'High',
-          estimatedDuration: '3 days',
-          actualDuration: '2.5 days',
-          cost: 2800,
-          schedule: {
-            date: 'Today, 2:00 PM',
-            duration: '2 hours'
-          },
+          additionalTechnicians: [],
+          timeEntries: [],
+          evidence: [],
           createdAt: '2024-01-15',
           updatedAt: '2024-01-15'
         },
@@ -175,19 +190,20 @@ export const AdminJobManagement: React.FC = () => {
           jobId: 'JOB-2024-001',
           title: 'Electrical Wiring',
           description: 'Install electrical components and wiring',
-          technician: {
+          type: 'install',
+          priority: 'medium',
+          status: 'to_do',
+          scheduledStart: '2024-01-16T09:00:00Z',
+          scheduledEnd: '2024-01-16T10:30:00Z',
+          estimatedMinutes: 90,
+          primaryTechnician: {
             id: 'tech-002',
             name: 'Sarah Johnson',
             avatar: userAvatar2
           },
-          status: 'To-do',
-          priority: 'Medium',
-          estimatedDuration: '2 days',
-          cost: 2200,
-          schedule: {
-            date: 'Tomorrow, 9:00 AM',
-            duration: '1.5 hours'
-          },
+          additionalTechnicians: [],
+          timeEntries: [],
+          evidence: [],
           createdAt: '2024-01-15',
           updatedAt: '2024-01-15'
         }
@@ -197,36 +213,36 @@ export const AdminJobManagement: React.FC = () => {
     },
     {
       id: 'JOB-2024-002',
-      title: 'Office Renovation',
-      description: 'Complete office space renovation project',
-      client: {
-        name: 'TechStart Inc',
-        address: '456 Innovation Ave, Tech District',
-        contact: 'Lisa Chen'
-      },
-      priority: 'Medium',
-      status: 'Planning',
-      estimatedCost: 25000,
+      name: 'Office Renovation',
+      jobType: 'maintenance',
+      status: 'active',
+      clientName: 'TechStart Inc',
+      clientContact: 'Lisa Chen',
       startDate: '2024-02-01',
+      budget: 25000,
+      primaryLocation: '456 Innovation Ave, Tech District',
+      jobsites: [],
+      checklistTemplates: [],
       workOrders: [
         {
           id: 'WO-2024-002-01',
           jobId: 'JOB-2024-002',
           title: 'Demolition Work',
           description: 'Remove existing walls and fixtures',
-          technician: {
+          type: 'maintenance',
+          priority: 'medium',
+          status: 'to_do',
+          scheduledStart: '2024-01-27T08:00:00Z',
+          scheduledEnd: '2024-01-27T12:00:00Z',
+          estimatedMinutes: 240,
+          primaryTechnician: {
             id: 'tech-003',
             name: 'Mike Davis',
             avatar: userAvatar3
           },
-          status: 'To-do',
-          priority: 'Medium',
-          estimatedDuration: '1 day',
-          cost: 1500,
-          schedule: {
-            date: 'Next Week, 8:00 AM',
-            duration: '4 hours'
-          },
+          additionalTechnicians: [],
+          timeEntries: [],
+          evidence: [],
           createdAt: '2024-01-20',
           updatedAt: '2024-01-20'
         }
@@ -241,12 +257,17 @@ export const AdminJobManagement: React.FC = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
+      case 'high':
       case 'High':
+      case 'urgent':
+      case 'Urgent':
         return 'bg-[#FFDFDF] text-[#DC2626]';
+      case 'medium':
       case 'Medium':
         return 'bg-[#FFEFD7] text-[#F39C12]';
-      case 'Overdue':
-        return 'bg-[#FFDFDF] text-[#DC2626]';
+      case 'low':
+      case 'Low':
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
       default:
         return 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
     }
@@ -363,16 +384,22 @@ export const AdminJobManagement: React.FC = () => {
               <input
                 type="text"
                 placeholder="search...."
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <button className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handleStatusFilter}
+                className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <span className="hidden sm:inline">All Status</span>
                 <span className="sm:hidden">Status</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              <button className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={handlePriorityFilter}
+                className="flex items-center gap-1 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <span className="hidden sm:inline">All Priority</span>
                 <span className="sm:hidden">Priority</span>
                 <ChevronDown className="w-4 h-4" />
@@ -430,7 +457,10 @@ export const AdminJobManagement: React.FC = () => {
                   </span>
                 </button>
               )}
-              <button className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <button 
+                onClick={() => setIsExportModalOpen(true)}
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#EBEBEB] dark:border-gray-700 rounded-lg text-sm text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export</span>
               </button>
@@ -506,10 +536,10 @@ export const AdminJobManagement: React.FC = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <JobIcon className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-medium text-black dark:text-white text-base">{job.title}</h3>
+                        <h3 className="font-medium text-black dark:text-white text-base">{job.name}</h3>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{job.id}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{job.client.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{job.clientName}</p>
                     </div>
                     <div className="flex gap-1">
                       <button 
@@ -533,9 +563,9 @@ export const AdminJobManagement: React.FC = () => {
                   
                   {/* Job Status and Priority */}
                   <div className="flex items-center gap-3 mt-3">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(job.priority)}`}>
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${getPriorityColor('medium')}`}>
                       <Flag className="w-3 h-3" />
-                      {job.priority}
+                      Medium
                     </span>
                     <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border ${getStatusColor(job.status)}`}>
                       <Circle className="w-2 h-2 fill-current" />
@@ -561,7 +591,7 @@ export const AdminJobManagement: React.FC = () => {
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <WorkOrderIcon className="w-4 h-4 text-green-600" />
+                              <WorkOrderIcon className="w-4 h-4 text-[#10BF0A]" />
                               <h4 className="font-medium text-black dark:text-white text-sm">{workOrder.title}</h4>
                             </div>
                             <p className="text-xs text-gray-600 dark:text-gray-400">{workOrder.id}</p>
@@ -586,23 +616,19 @@ export const AdminJobManagement: React.FC = () => {
                         <div className="mt-3 space-y-2">
                           <div className="flex items-center gap-3">
                             <img
-                              src={workOrder.technician.avatar}
-                              alt={`${workOrder.technician.name} avatar`}
+                              src={workOrder.primaryTechnician.avatar}
+                              alt={`${workOrder.primaryTechnician.name} avatar`}
                               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                             />
                             <div>
-                              <p className="text-sm font-medium text-black dark:text-white">{workOrder.technician.name}</p>
+                              <p className="text-sm font-medium text-black dark:text-white">{workOrder.primaryTechnician.name}</p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">Technician</p>
                             </div>
                           </div>
                           
                           <div className="flex items-center gap-3">
                             <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(workOrder.priority)}`}>
-                              {workOrder.priority === 'Overdue' ? (
-                                <Circle className="w-2 h-2 fill-current" />
-                              ) : (
-                                <Flag className="w-2 h-2" />
-                              )}
+                              <Flag className="w-2 h-2" />
                               {workOrder.priority}
                             </span>
                             <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border ${getStatusColor(workOrder.status)}`}>
@@ -632,7 +658,7 @@ export const AdminJobManagement: React.FC = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <WorkOrderIcon className="w-4 h-4 text-green-600" />
+                        <WorkOrderIcon className="w-4 h-4 text-[#10BF0A]" />
                         <h3 className="font-medium text-black dark:text-white text-base">{workOrder.title}</h3>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{workOrder.id}</p>
@@ -663,12 +689,12 @@ export const AdminJobManagement: React.FC = () => {
                   {/* Technician Info */}
                   <div className="flex items-center gap-3">
                     <img
-                      src={workOrder.technician.avatar}
-                      alt={`${workOrder.technician.name} avatar`}
+                      src={workOrder.primaryTechnician.avatar}
+                      alt={`${workOrder.primaryTechnician.name} avatar`}
                       className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black dark:text-white">{workOrder.technician.name}</p>
+                      <p className="text-sm font-medium text-black dark:text-white">{workOrder.primaryTechnician.name}</p>
                       <p className="text-xs text-gray-600 dark:text-gray-400">Technician</p>
                     </div>
                   </div>
@@ -678,10 +704,10 @@ export const AdminJobManagement: React.FC = () => {
                     <div className="flex items-start gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-black dark:text-white">
-                          {jobsData.find(job => job.id === workOrder.jobId)?.title}
+                          {jobsData.find(job => job.id === workOrder.jobId)?.name}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          {jobsData.find(job => job.id === workOrder.jobId)?.client.name}
+                          {jobsData.find(job => job.id === workOrder.jobId)?.clientName}
                         </p>
                       </div>
                     </div>
@@ -692,11 +718,7 @@ export const AdminJobManagement: React.FC = () => {
                     <div>
                       <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Priority</p>
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(workOrder.priority)}`}>
-                        {workOrder.priority === 'Overdue' ? (
-                          <Circle className="w-3 h-3 fill-current" />
-                        ) : (
-                          <Flag className="w-3 h-3" />
-                        )}
+                        <Flag className="w-3 h-3" />
                         {workOrder.priority}
                       </span>
                     </div>
@@ -709,13 +731,13 @@ export const AdminJobManagement: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Cost</p>
-                      <p className="text-sm font-medium text-black dark:text-white">${workOrder.cost}</p>
+                      <p className="text-sm font-medium text-black dark:text-white">—</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Schedule</p>
                       <div>
-                        <p className="text-sm text-black dark:text-white">{workOrder.schedule.date}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">{workOrder.schedule.duration}</p>
+                        <p className="text-sm text-black dark:text-white">{new Date(workOrder.scheduledStart).toLocaleString()}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{new Date(workOrder.scheduledEnd).toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
@@ -783,7 +805,7 @@ export const AdminJobManagement: React.FC = () => {
                           </button>
                           <JobIcon className="w-5 h-5 text-blue-600" />
                           <div>
-                            <div className="font-medium text-black dark:text-white">{job.title}</div>
+                            <div className="font-medium text-black dark:text-white">{job.name}</div>
                             <div className="text-sm text-gray-600 dark:text-gray-400">{job.id}</div>
                           </div>
                         </div>
@@ -795,15 +817,12 @@ export const AdminJobManagement: React.FC = () => {
                       </td>
                       <td className="px-4 py-4">
                         <div>
-                          <div className="font-medium text-black dark:text-white">{job.client.name}</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">{job.client.address}</div>
+                          <div className="font-medium text-black dark:text-white">{job.clientName}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">{job.primaryLocation}</div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <span className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(job.priority)}`}>
-                          <Flag className="w-3 h-3" />
-                          {job.priority}
-                        </span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">—</span>
                       </td>
                       <td className="px-4 py-4">
                         <span className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium border ${getStatusColor(job.status)}`}>
@@ -812,7 +831,7 @@ export const AdminJobManagement: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-4 py-4 text-sm text-black dark:text-white">
-                        ${job.estimatedCost?.toLocaleString()}
+                        —
                       </td>
                       <td className="px-4 py-4">
                         <div>
@@ -849,7 +868,7 @@ export const AdminJobManagement: React.FC = () => {
                         </td>
                         <td className="px-4 py-4 pl-12">
                           <div className="flex items-center gap-3">
-                            <WorkOrderIcon className="w-4 h-4 text-green-600" />
+                            <WorkOrderIcon className="w-4 h-4 text-[#10BF0A]" />
                             <div>
                               <div className="font-medium text-black dark:text-white">{workOrder.title}</div>
                               <div className="text-sm text-gray-600 dark:text-gray-400">{workOrder.id}</div>
@@ -859,25 +878,21 @@ export const AdminJobManagement: React.FC = () => {
                         <td className="px-4 py-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={workOrder.technician.avatar}
-                              alt={`${workOrder.technician.name} avatar`}
+                              src={workOrder.primaryTechnician.avatar}
+                              alt={`${workOrder.primaryTechnician.name} avatar`}
                               className="w-8 h-8 rounded-full object-cover"
                             />
-                            <div className="text-sm text-black dark:text-white">{workOrder.technician.name}</div>
+                            <div className="text-sm text-black dark:text-white">{workOrder.primaryTechnician.name}</div>
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            {job.client.name}
+                            {job.clientName}
                           </div>
                         </td>
                         <td className="px-4 py-4">
                           <span className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(workOrder.priority)}`}>
-                            {workOrder.priority === 'Overdue' ? (
-                              <Circle className="w-3 h-3 fill-current" />
-                            ) : (
-                              <Flag className="w-3 h-3" />
-                            )}
+                            <Flag className="w-3 h-3" />
                             {workOrder.priority}
                           </span>
                         </td>
@@ -888,12 +903,12 @@ export const AdminJobManagement: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-black dark:text-white">
-                          ${workOrder.cost?.toLocaleString()}
+                          —
                         </td>
                         <td className="px-4 py-4">
                           <div>
-                            <div className="text-sm text-black dark:text-white">{workOrder.schedule.date}</div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">{workOrder.schedule.duration}</div>
+                            <div className="text-sm text-black dark:text-white">{new Date(workOrder.scheduledStart).toLocaleString()}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(workOrder.scheduledEnd).toLocaleString()}</div>
                           </div>
                         </td>
                         <td className="px-4 py-4">
@@ -939,12 +954,12 @@ export const AdminJobManagement: React.FC = () => {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
-                          <WorkOrderIcon className="w-4 h-4 text-green-600" />
+                          <WorkOrderIcon className="w-4 h-4 text-[#10BF0A]" />
                           <div>
                             <div className="font-medium text-black dark:text-white">{workOrder.title}</div>
                             <div className="text-sm text-gray-600 dark:text-gray-400">{workOrder.id}</div>
                             <div className="text-xs text-gray-500 dark:text-gray-500">
-                              Job: {parentJob?.title}
+                              Job: {parentJob?.name}
                             </div>
                           </div>
                         </div>
@@ -952,26 +967,22 @@ export const AdminJobManagement: React.FC = () => {
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={workOrder.technician.avatar}
-                            alt={`${workOrder.technician.name} avatar`}
+                            src={workOrder.primaryTechnician.avatar}
+                            alt={`${workOrder.primaryTechnician.name} avatar`}
                             className="w-8 h-8 rounded-full object-cover"
                           />
-                          <div className="text-sm text-black dark:text-white">{workOrder.technician.name}</div>
+                          <div className="text-sm text-black dark:text-white">{workOrder.primaryTechnician.name}</div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
                         <div>
-                          <div className="font-medium text-black dark:text-white">{parentJob?.client.name}</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">{parentJob?.client.address}</div>
+                          <div className="font-medium text-black dark:text-white">{parentJob?.clientName}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">{parentJob?.primaryLocation}</div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
                         <span className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium ${getPriorityColor(workOrder.priority)}`}>
-                          {workOrder.priority === 'Overdue' ? (
-                            <Circle className="w-3 h-3 fill-current" />
-                          ) : (
-                            <Flag className="w-3 h-3" />
-                          )}
+                          <Flag className="w-3 h-3" />
                           {workOrder.priority}
                         </span>
                       </td>
@@ -982,12 +993,12 @@ export const AdminJobManagement: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-4 py-4 text-sm text-black dark:text-white">
-                        ${workOrder.cost?.toLocaleString()}
+                        —
                       </td>
                       <td className="px-4 py-4">
                         <div>
-                          <div className="text-sm text-black dark:text-white">{workOrder.schedule.date}</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">{workOrder.schedule.duration}</div>
+                          <div className="text-sm text-black dark:text-white">{new Date(workOrder.scheduledStart).toLocaleString()}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(workOrder.scheduledEnd).toLocaleString()}</div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
@@ -1028,7 +1039,10 @@ export const AdminJobManagement: React.FC = () => {
             <button className="w-8 h-8 bg-[#10BF0A] text-white rounded text-sm font-medium">1</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">2</button>
             <button className="w-8 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">3</button>
-            <button className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 sm:px-4 h-8 border border-[#EBEBEB] text-gray-600 dark:text-gray-400 rounded text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
               <span className="hidden sm:inline">Next</span>
               <span className="sm:hidden">→</span>
             </button>
@@ -1072,10 +1086,25 @@ export const AdminJobManagement: React.FC = () => {
         onClose={() => setIsTechnicianAssignmentOpen(false)}
         onAssign={handleTechnicianAssignment}
         jobId={selectedJobForAssignment?.id || ''}
-        jobTitle={selectedJobForAssignment?.title || ''}
-        jobLocation={selectedJobForAssignment?.client?.address || ''}
-        jobPriority={selectedJobForAssignment?.priority || ''}
-        requiredSkills={['HVAC', 'Electrical']}
+        technicians={[
+          { id: '1', name: 'John Doe', status: 'Available', currentJobs: 2 },
+          { id: '2', name: 'Jane Smith', status: 'Busy', currentJobs: 3 },
+          { id: '3', name: 'Mike Johnson', status: 'Available', currentJobs: 1 }
+        ]}
+      />
+
+      {/* Job Status Filter Modal */}
+      <JobStatusFilterModal
+        isOpen={isStatusFilterModalOpen}
+        onClose={() => setIsStatusFilterModalOpen(false)}
+        onApply={handleApplyFilters}
+      />
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
       />
     </div>
   );

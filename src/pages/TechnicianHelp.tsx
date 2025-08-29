@@ -420,11 +420,21 @@ export const TechnicianHelp: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-[14px] text-gray-600 dark:text-gray-400">
             <span className="flex items-center gap-1">
               <span>📧</span>
-              <span>Email: support@fieldsync.com</span>
+              <span 
+                className="text-[#10BF0A] cursor-pointer hover:underline"
+                onClick={() => window.open('mailto:support@fieldsync.com')}
+              >
+                Email: support@fieldsync.com
+              </span>
             </span>
             <span className="flex items-center gap-1">
               <span>📞</span>
-              <span>Phone: (555) 123-4567</span>
+              <span 
+                className="text-[#10BF0A] cursor-pointer hover:underline"
+                onClick={() => window.open('tel:(555) 123-4567')}
+              >
+                Phone: (555) 123-4567
+              </span>
             </span>
           </div>
         </div>

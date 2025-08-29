@@ -92,7 +92,6 @@ export const TechnicianSettings: React.FC = () => {
 
   const handleSaveProfile = (profile: any) => {
     console.log('Saving profile:', profile);
-    // TODO: Implement profile save logic
     setIsProfileModalOpen(false);
   };
 

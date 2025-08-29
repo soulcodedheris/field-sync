@@ -14,12 +14,29 @@ import {
   Clock
 } from 'lucide-react';
 import type { LibraryDocument, LibraryCategory, LibraryFilter } from '../types';
+import { TechnicianLibraryFilterModal } from '../components/TechnicianLibraryFilterModal';
 
 const TechnicianLibrary: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedType, setSelectedType] = useState('All Types');
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Modal state
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<LibraryDocument | null>(null);
+
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
+
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categories.find(cat => cat.id === categoryId)?.name || 'All Categories');
+  };
+
+  const handleDocumentClick = (document: LibraryDocument) => {
+    setSelectedDocument(document);
+  };
 
   // Mock data for categories
   const categories: LibraryCategory[] = [
@@ -133,11 +150,11 @@ const TechnicianLibrary: React.FC = () => {
 
   const getTypeBadge = (type: string) => {
     const typeColors = {
-      manual: 'bg-green-100 text-green-800',
-      sop: 'bg-green-100 text-green-800',
-      guide: 'bg-green-100 text-green-800',
-      safety: 'bg-green-100 text-green-800',
-      training: 'bg-green-100 text-green-800'
+          manual: 'bg-[#10BF0A]/10 text-[#10BF0A]',
+    sop: 'bg-[#10BF0A]/10 text-[#10BF0A]',
+    guide: 'bg-[#10BF0A]/10 text-[#10BF0A]',
+    safety: 'bg-[#10BF0A]/10 text-[#10BF0A]',
+    training: 'bg-[#10BF0A]/10 text-[#10BF0A]'
     };
 
     return (
@@ -150,15 +167,15 @@ const TechnicianLibrary: React.FC = () => {
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
       case 'AlertOctagon':
-        return <AlertOctagon className="w-5 h-5 text-green-600" />;
+        return <AlertOctagon className="w-5 h-5 text-[#10BF0A]" />;
       case 'Wrench':
-        return <Wrench className="w-5 h-5 text-green-600" />;
+        return <Wrench className="w-5 h-5 text-[#10BF0A]" />;
       case 'FileText':
-        return <FileText className="w-5 h-5 text-green-600" />;
+        return <FileText className="w-5 h-5 text-[#10BF0A]" />;
       case 'GraduationCap':
-        return <GraduationCap className="w-5 h-5 text-green-600" />;
+        return <GraduationCap className="w-5 h-5 text-[#10BF0A]" />;
       default:
-        return <FileText className="w-5 h-5 text-green-600" />;
+        return <FileText className="w-5 h-5 text-[#10BF0A]" />;
     }
   };
 
@@ -183,6 +200,7 @@ const TechnicianLibrary: React.FC = () => {
           {categories.map((category) => (
             <div
               key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
               className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:shadow-md transition-shadow"
             >
               <div 
@@ -227,7 +245,10 @@ const TechnicianLibrary: React.FC = () => {
               <span className="truncate">{selectedType}</span>
               <ChevronDown className="w-3 h-3 flex-shrink-0" />
             </button>
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg text-sm sm:text-lg">
+            <button 
+              onClick={() => setIsFilterModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm sm:text-lg"
+            >
               <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Filter</span>
             </button>
@@ -244,6 +265,7 @@ const TechnicianLibrary: React.FC = () => {
           {documents.concat(documents).map((doc, index) => (
             <div
               key={`${doc.id}-${index}`}
+              onClick={() => handleDocumentClick(doc)}
               className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-lg p-3 sm:p-4 cursor-pointer hover:shadow-md transition-shadow"
             >
               {/* Document Header */}
@@ -272,6 +294,13 @@ const TechnicianLibrary: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal */}
+      <TechnicianLibraryFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
     </div>
   );
 };

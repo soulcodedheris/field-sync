@@ -6,6 +6,7 @@ import userAvatar3 from '../assets/user-avatar-3.png';
 import attachment1 from '../assets/attachment-1.png';
 import attachment2 from '../assets/attachment-2.png';
 import attachment3 from '../assets/attachment-3.png';
+import { JobLogFilterModal } from '../components/JobLogFilterModal';
 
 // Mock data for job log entries
 const mockJobLogEntries = [
@@ -69,6 +70,13 @@ const mockJobLogEntries = [
 
 export const TechnicianJobLog: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal state
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  const handleFilterApply = (filters: any) => {
+    console.log('Applying filters:', filters);
+  };
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -105,7 +113,10 @@ export const TechnicianJobLog: React.FC = () => {
               <span>All Jobs</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <button className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm">
+            <button 
+              onClick={() => setIsFilterModalOpen(true)}
+              className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#10BF0A] text-white rounded-lg text-sm"
+            >
               <Filter className="w-4 h-4" />
               <span>Filter</span>
             </button>
@@ -209,6 +220,13 @@ export const TechnicianJobLog: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <JobLogFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
     </div>
   );
 };

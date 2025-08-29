@@ -28,6 +28,10 @@ export default {
       maxWidth: {
         '8xl': '88rem',
         '9xl': '96rem',
+        '404-px': '404px',
+        '464-px': '464px',
+        '512-px': '512px',
+        '624-px': '624px',
       },
       minHeight: {
         'screen-75': '75vh',
@@ -182,12 +186,7 @@ export default {
         '36-px': '36px',
         '80-px': '80px',
       },
-      maxWidth: {
-        '404-px': '404px',
-        '464-px': '464px',
-        '512-px': '512px',
-        '624-px': '624px',
-      },
+
       objectPosition: {
         'cover': 'cover',
       },

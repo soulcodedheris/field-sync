@@ -26,6 +26,35 @@ const AdminSettings: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [notificationSettings, setNotificationSettings] = useState({
+    newJobAssignments: true,
+    teamJobAssignments: true,
+    paymentConfirmed: true,
+    lowInventoryAlert: false,
+    emergencyAlerts: false,
+    doNotDisturb: true
+  });
+
+  const handleToggleSetting = (setting: keyof typeof notificationSettings) => {
+    setNotificationSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
+  };
+
+  const handleDownloadInvoice = (invoiceId: string) => {
+    console.log('Download invoice clicked:', invoiceId);
+    const blob = new Blob([
+      `Invoice ${invoiceId}\nAmount: $99.00\nStatus: PAID\nDate: Dec 15, 2023`], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${invoiceId}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="sm:p-6 space-y-6 sm:space-y-8">
@@ -316,8 +345,15 @@ const AdminSettings: React.FC = () => {
                 <h3 className="text-base sm:text-lg font-medium text-black dark:text-white mb-1">New Job Assignments</h3>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Get notified when a new job is assigned to your account.</p>
               </div>
-              <div className="w-11 h-6 bg-[#10BF0A] rounded-full relative">
-                <div className="w-5 h-5 bg-white dark:bg-gray-700 rounded-full absolute top-0.5 right-0.5"></div>
+              <div 
+                onClick={() => handleToggleSetting('newJobAssignments')}
+                className={`w-11 h-6 rounded-full relative cursor-pointer transition-colors ${
+                  notificationSettings.newJobAssignments ? 'bg-[#10BF0A]' : 'bg-[#E5E7EB]'
+                }`}
+              >
+                <div className={`w-5 h-5 bg-white dark:bg-gray-700 rounded-full absolute top-0.5 transition-transform ${
+                  notificationSettings.newJobAssignments ? 'right-0.5' : 'left-0.5'
+                }`}></div>
               </div>
             </div>
             
@@ -703,7 +739,12 @@ const AdminSettings: React.FC = () => {
                     <div className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Dec 15, 2023</div>
                     <div className="text-sm sm:text-base font-medium text-black dark:text-white">$99.00</div>
                     <span className="px-2 py-1 bg-[#DCFBE9] text-[#2ECC71] rounded text-xs w-fit">PAID</span>
-                    <button className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors">Download</button>
+                    <button 
+                      onClick={() => handleDownloadInvoice('INV-2024-001')}
+                      className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors"
+                    >
+                      Download
+                    </button>
                         </div>
               </div>
             </div>
@@ -720,7 +761,12 @@ const AdminSettings: React.FC = () => {
                     <div className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Dec 15, 2023</div>
                     <div className="text-sm sm:text-base font-medium text-black dark:text-white">$99.00</div>
                     <span className="px-2 py-1 bg-[#DCFBE9] text-[#2ECC71] rounded text-xs w-fit">PAID</span>
-                    <button className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors">Download</button>
+                    <button 
+                      onClick={() => handleDownloadInvoice('INV-2024-002')}
+                      className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors"
+                    >
+                      Download
+                    </button>
                   </div>
                 </div>
               </div>
@@ -737,7 +783,12 @@ const AdminSettings: React.FC = () => {
                     <div className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Dec 15, 2023</div>
                     <div className="text-sm sm:text-base font-medium text-black dark:text-white">$99.00</div>
                     <span className="px-2 py-1 bg-[#DCFBE9] text-[#2ECC71] rounded text-xs w-fit">PAID</span>
-                    <button className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors">Download</button>
+                    <button 
+                      onClick={() => handleDownloadInvoice('INV-2024-003')}
+                      className="text-sm sm:text-base font-medium text-[#10BF0A] hover:text-[#0EA509] transition-colors"
+                    >
+                      Download
+                    </button>
                   </div>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AuthState, User, LoginCredentials } from '../types/index.ts';
-import { authService } from '../services/authService.ts';
+import { authService } from '../services/authService';
 
 interface AuthStore extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;

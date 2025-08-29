@@ -16,13 +16,18 @@ import {
   Flag
 } from 'lucide-react';
 import { AnnouncementComposeModal } from '../components/AnnouncementComposeModal';
+import { AnnouncementViewModal } from '../components/AnnouncementViewModal';
+import { AnnouncementDeleteModal } from '../components/AnnouncementDeleteModal';
 
 export const SuperAdminAnnouncements: React.FC = () => {
   const { user } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('All Company');
   const [selectedPriority, setSelectedPriority] = useState('All Priority');
   const [isComposeModalOpen, setIsComposeModalOpen] = useState(false);
+  const [viewAnnouncement, setViewAnnouncement] = useState<any>(null);
+  const [deleteAnnouncement, setDeleteAnnouncement] = useState<any>(null);
 
   const stats = [
     {
@@ -228,10 +233,16 @@ export const SuperAdminAnnouncements: React.FC = () => {
                       {announcement.priority}
                     </span>
                     <div className="flex items-center gap-2">
-                      <button className="p-1 border border-[#EBEBEB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <button
+                        onClick={() => setViewAnnouncement(announcement)}
+                        className="p-1 border border-[#EBEBEB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
                         <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </button>
-                      <button className="p-1 border border-[#EBEBEB] rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <button
+                        onClick={() => setDeleteAnnouncement(announcement)}
+                        className="p-1 border border-[#EBEBEB] rounded hover:bg-gray-50 dark:hoverbg-gray-800 transition-colors"
+                      >
                         <Trash className="w-4 h-4 text-[#F44336]" />
                       </button>
                     </div>
@@ -249,7 +260,10 @@ export const SuperAdminAnnouncements: React.FC = () => {
             <button className="px-3 py-1 bg-[#10BF0A] text-white rounded text-sm hover:bg-[#0EA50A] transition-colors">1</button>
             <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
             <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
-            <button className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="px-3 py-1 border border-[#D1D5DB] rounded text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
               Next
             </button>
           </div>
@@ -260,6 +274,19 @@ export const SuperAdminAnnouncements: React.FC = () => {
       <AnnouncementComposeModal
         isOpen={isComposeModalOpen}
         onClose={() => setIsComposeModalOpen(false)}
+      />
+
+      <AnnouncementViewModal
+        isOpen={!!viewAnnouncement}
+        onClose={() => setViewAnnouncement(null)}
+        announcement={viewAnnouncement}
+      />
+
+      <AnnouncementDeleteModal
+        isOpen={!!deleteAnnouncement}
+        onClose={() => setDeleteAnnouncement(null)}
+        onConfirm={(id) => console.log('Delete announcement:', id)}
+        announcement={deleteAnnouncement}
       />
     </div>
   );

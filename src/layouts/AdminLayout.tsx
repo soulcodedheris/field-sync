@@ -19,7 +19,9 @@ import {
   Settings,
   Menu,
   X,
-  ChevronDown as ArrowDown
+  ChevronDown as ArrowDown,
+  Clock,
+  Building
 } from 'lucide-react';
 import {
   DashboardIcon,
@@ -43,8 +45,10 @@ export const AdminLayout: React.FC = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: DashboardIcon },
+    { name: 'Project Management', href: '/admin/project-management', icon: Building },
     { name: 'Job Management', href: '/admin/job-management', icon: JobsIcon },
     { name: 'Team Management', href: '/admin/team-management', icon: Users },
+    { name: 'Time Entries', href: '/admin/time-entries', icon: Clock },
     { name: 'Analytics & Reports', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Schedule', href: '/admin/schedule', icon: ScheduleIcon },
     { name: 'Inventory', href: '/admin/inventory', icon: InventoryIcon },

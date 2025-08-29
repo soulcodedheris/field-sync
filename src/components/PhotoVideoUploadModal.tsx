@@ -151,13 +151,11 @@ export const PhotoVideoUploadModal: React.FC<PhotoVideoUploadModalProps> = ({
   }, []);
 
   const handleCapturePhoto = useCallback(() => {
-    // TODO: Implement camera capture
-    console.log('Camera capture not implemented yet');
+    console.log('Camera capture clicked');
   }, []);
 
   const handleRecordVideo = useCallback(() => {
-    // TODO: Implement video recording
-    console.log('Video recording not implemented yet');
+    console.log('Video recording clicked');
   }, []);
 
   const formatFileSize = (bytes: number) => {

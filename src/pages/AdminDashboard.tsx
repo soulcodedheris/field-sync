@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuthStore } from '../stores/authStore';
+import { useNavigate } from 'react-router-dom';
 import userAvatar1 from '../assets/user-avatar-1.png';
 import userAvatar2 from '../assets/user-avatar-2.png';
 import userAvatar3 from '../assets/user-avatar-3.png';
@@ -20,11 +21,13 @@ import {
   User,
   MapPin,
   Flag,
-  Circle
+  Circle,
+  Building
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   const statCards = [
     {
@@ -48,22 +51,22 @@ export const AdminDashboard: React.FC = () => {
       iconColor: 'text-[#10BF0A]'
     },
     {
+      title: 'Pending Approvals',
+      value: '8',
+      change: '+3',
+      changeType: 'increase',
+      comparison: 'time entries need review',
+      icon: Clock,
+      iconBg: 'bg-[rgba(255,193,7,0.64)]',
+      iconColor: 'text-yellow-600'
+    },
+    {
       title: 'Weekly Revenue',
       value: '$120,450',
       change: '-3%',
       changeType: 'decrease',
       comparison: 'compared to last week',
       icon: DollarSign,
-      iconBg: 'bg-[rgba(211,253,210,0.64)]',
-      iconColor: 'text-[#10BF0A]'
-    },
-    {
-      title: 'Avg Efficiency',
-      value: '74%',
-      change: '+10%',
-      changeType: 'increase',
-      comparison: 'compared to last week',
-      icon: Rocket,
       iconBg: 'bg-[rgba(211,253,210,0.64)]',
       iconColor: 'text-[#10BF0A]'
     }
@@ -232,7 +235,10 @@ export const AdminDashboard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-black dark:text-white">Active Jobs</h2>
-          <button className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors">
+          <button 
+            onClick={() => navigate('/admin/job-management')}
+            className="flex items-center gap-2 px-3 py-2 bg-[#10BF0A] text-white rounded-lg text-sm font-medium hover:bg-[#0EA509] transition-colors"
+          >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Add Job</span>
             <span className="sm:hidden">Add</span>
@@ -289,8 +295,22 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div
+          onClick={() => navigate('/admin/project-management')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
+                                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#10BF0A]/10 dark:bg-[#10BF0A]/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <Building className="w-6 h-6 sm:w-8 sm:h-8 text-[#10BF0A] dark:text-[#10BF0A]" />
+            </div>
+          <h3 className="text-sm sm:text-base font-medium text-black dark:text-white mb-1">Projects</h3>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Manage client projects</p>
+        </div>
+
+        <div
+          onClick={() => navigate('/admin/job-management')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#10BF0A]/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-[#10BF0A]" />
           </div>
@@ -298,15 +318,32 @@ export const AdminDashboard: React.FC = () => {
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Add new job assignment</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" />
+        <div 
+          onClick={() => navigate('/admin/time-entries')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-yellow-100 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400" />
           </div>
+          <h3 className="text-sm sm:text-base font-medium text-black dark:text-white mb-1">Time Entries</h3>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Review & approve</p>
+        </div>
+
+        <div 
+          onClick={() => navigate('/admin/analytics')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
+                                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#10BF0A]/10 dark:bg-[#10BF0A]/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[#10BF0A] dark:text-[#10BF0A]" />
+            </div>
           <h3 className="text-sm sm:text-base font-medium text-black dark:text-white mb-1">View Analytics</h3>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Performance insights</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+        <div 
+          onClick={() => navigate('/admin/ai-assistant')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Bot className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 dark:text-purple-400" />
           </div>
@@ -314,7 +351,10 @@ export const AdminDashboard: React.FC = () => {
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Get help & insights</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+        <div 
+          onClick={() => navigate('/admin/announcements')}
+          className="bg-white dark:bg-gray-800 border border-[#EBEBEB] dark:border-gray-700 rounded-xl p-4 sm:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+        >
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
             <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 dark:text-orange-400" />
           </div>
